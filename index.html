@@ -1375,6 +1375,14 @@
                 </div>
 
                 <div class="owner-actions">
+                    <button class="owner-btn" onclick="sendAllToWebhook()">
+                        <span>📤 SEND ALL REPORTS TO WEBHOOK</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
+                    <button class="owner-btn" onclick="sendSummaryToWebhook()">
+                        <span>📊 SEND SUMMARY TO WEBHOOK</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
                     <button class="owner-btn" onclick="exportAllData()">
                         <span>📥 EXPORT ALL DATA (JSON)</span>
                         <span class="owner-btn-icon">→</span>
@@ -1554,6 +1562,216 @@
         let uploadedImages = [];
         let isOwnerMode = false;
         const OWNER_PASSWORD = "Owner"; // Change this to your desired password
+        const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1466193197175931128/LoAPtOv0X4FTQRyvQLtfQWH-mz0AD7-fOOclpOECsysLZryFxKsIZ0veJ-L0i9BkYKdX";
+        
+        // Send report to Discord webhook
+        async function sendToWebhook(report) {
+            const embed = {
+                title: "🚨 NEW SCAM REPORT",
+                color: 16711680, // Red color
+                fields: [
+                    {
+                        name: "⚠️ SCAMMER",
+                        value: `\`\`\`${report.scammerName}\`\`\``,
+                        inline: false
+                    },
+                    {
+                        name: "👤 REPORTED BY",
+                        value: `\`\`\`${report.victimName}\`\`\``,
+                        inline: false
+                    },
+                    {
+                        name: "💀 BRAINROT SCAMMED",
+                        value: `\`\`\`${report.brainrot}\`\`\``,
+                        inline: false
+                    },
+                    {
+                        name: "📝 DESCRIPTION",
+                        value: report.description.length > 1024 ? report.description.substring(0, 1021) + "..." : report.description,
+                        inline: false
+                    },
+                    {
+                        name: "📅 DATE",
+                        value: `\`${report.date}\``,
+                        inline: true
+                    },
+                    {
+                        name: "🔍 REPORT ID",
+                        value: `\`${report.id}\``,
+                        inline: true
+                    },
+                    {
+                        name: "📸 PROOF IMAGES",
+                        value: `\`${report.images.length} image(s) attached\``,
+                        inline: true
+                    }
+                ],
+                footer: {
+                    text: "Steal a Brainrot • Scam Reports System"
+                },
+                timestamp: new Date(report.timestamp).toISOString(),
+                thumbnail: {
+                    url: "https://cdn.discordapp.com/emojis/1234567890.png" // Warning icon
+                }
+            };
+
+            // If there are images, add the first one as the main image
+            if (report.images.length > 0) {
+                // For base64 images, we can't directly embed them in Discord
+                // Instead, we'll note that images are stored locally
+                embed.image = {
+                    url: "attachment://proof.png"
+                };
+            }
+
+            const payload = {
+                username: "SCAM REPORTS",
+                avatar_url: "https://i.imgur.com/4M34hi2.png",
+                embeds: [embed]
+            };
+
+            try {
+                const response = await fetch(DISCORD_WEBHOOK, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    console.log('Report sent to webhook successfully');
+                    return true;
+                } else {
+                    console.error('Failed to send to webhook:', response.status);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error sending to webhook:', error);
+                return false;
+            }
+        }
+
+        // Send all reports to webhook
+        async function sendAllToWebhook() {
+            if (reports.length === 0) {
+                showNotification('⚠ NO REPORTS TO SEND');
+                return;
+            }
+
+            if (!confirm(`Send ${reports.length} report(s) to Discord webhook?`)) {
+                return;
+            }
+
+            showNotification('📤 SENDING TO WEBHOOK...');
+            
+            let successCount = 0;
+            for (let i = 0; i < reports.length; i++) {
+                const success = await sendToWebhook(reports[i]);
+                if (success) successCount++;
+                
+                // Add delay to avoid rate limiting
+                if (i < reports.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+            }
+
+            showNotification(`✓ SENT ${successCount}/${reports.length} REPORTS`);
+        }
+
+        // Send summary to webhook
+        async function sendSummaryToWebhook() {
+            const totalImages = reports.reduce((sum, r) => sum + r.images.length, 0);
+            const verifiedCount = reports.filter(r => r.verified).length;
+            const recentCount = reports.filter(r => r.timestamp > Date.now() - (7 * 24 * 60 * 60 * 1000)).length;
+
+            const embed = {
+                title: "📊 SCAM REPORTS SUMMARY",
+                color: 65280, // Green color
+                description: "**Complete system statistics and overview**",
+                fields: [
+                    {
+                        name: "📈 TOTAL REPORTS",
+                        value: `\`\`\`${reports.length}\`\`\``,
+                        inline: true
+                    },
+                    {
+                        name: "✅ VERIFIED",
+                        value: `\`\`\`${verifiedCount}\`\`\``,
+                        inline: true
+                    },
+                    {
+                        name: "🆕 THIS WEEK",
+                        value: `\`\`\`${recentCount}\`\`\``,
+                        inline: true
+                    },
+                    {
+                        name: "📸 TOTAL IMAGES",
+                        value: `\`\`\`${totalImages}\`\`\``,
+                        inline: true
+                    },
+                    {
+                        name: "📊 AVG IMAGES/REPORT",
+                        value: `\`\`\`${reports.length > 0 ? (totalImages / reports.length).toFixed(2) : 0}\`\`\``,
+                        inline: true
+                    },
+                    {
+                        name: "✓ VERIFICATION RATE",
+                        value: `\`\`\`${reports.length > 0 ? ((verifiedCount / reports.length) * 100).toFixed(1) : 0}%\`\`\``,
+                        inline: true
+                    }
+                ],
+                footer: {
+                    text: "Steal a Brainrot • Owner Panel"
+                },
+                timestamp: new Date().toISOString()
+            };
+
+            // Add top scammers list if there are reports
+            if (reports.length > 0) {
+                const scammerCounts = {};
+                reports.forEach(r => {
+                    scammerCounts[r.scammerName] = (scammerCounts[r.scammerName] || 0) + 1;
+                });
+                
+                const topScammers = Object.entries(scammerCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5)
+                    .map((entry, index) => `${index + 1}. **${entry[0]}** - ${entry[1]} report(s)`)
+                    .join('\n');
+
+                embed.fields.push({
+                    name: "🔥 TOP SCAMMERS",
+                    value: topScammers || "None",
+                    inline: false
+                });
+            }
+
+            const payload = {
+                username: "SCAM REPORTS",
+                avatar_url: "https://i.imgur.com/4M34hi2.png",
+                embeds: [embed]
+            };
+
+            try {
+                const response = await fetch(DISCORD_WEBHOOK, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    showNotification('✓ SUMMARY SENT TO WEBHOOK');
+                } else {
+                    showNotification('⚠ FAILED TO SEND SUMMARY');
+                }
+            } catch (error) {
+                showNotification('⚠ WEBHOOK ERROR');
+                console.error('Error:', error);
+            }
+        }
 
         // F8 Key listener for owner console
         document.addEventListener('keydown', function(e) {
@@ -1948,7 +2166,7 @@
             }
         }
 
-        document.getElementById('reportForm').addEventListener('submit', function(e) {
+        document.getElementById('reportForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const scammerName = document.getElementById('scammerName').value.trim();
@@ -1993,6 +2211,10 @@
             updateStatistics();
             if (isOwnerMode) updateOwnerStats();
 
+            // Send to Discord webhook automatically
+            showNotification('📤 SENDING TO DISCORD...');
+            const webhookSuccess = await sendToWebhook(newReport);
+            
             document.getElementById('reportForm').reset();
             uploadedImages = [];
             document.getElementById('imagePreview').classList.remove('show');
@@ -2001,7 +2223,11 @@
             document.getElementById('uploadText').innerHTML = '📸 CLICK TO UPLOAD PROOF<br><small>(Screenshots, DMs, Chat logs)</small>';
             document.getElementById('uploadText').classList.remove('active');
             
-            showNotification('✓ SUBMITTED');
+            if (webhookSuccess) {
+                showNotification('✓ REPORT SUBMITTED & SENT TO DISCORD');
+            } else {
+                showNotification('✓ REPORT SUBMITTED (WEBHOOK FAILED)');
+            }
         });
 
         document.getElementById('searchBox').addEventListener('input', displayReports);
