@@ -21,6 +21,7 @@
             --accent: #ffffff;
             --border: #222222;
             --shadow: rgba(255, 255, 255, 0.1);
+            --owner-accent: #00ff00;
         }
 
         body {
@@ -79,7 +80,6 @@
             100% { transform: translate(60px, 60px) rotate(0.5deg); }
         }
 
-        /* Vignette effect */
         .vignette {
             position: fixed;
             top: 0;
@@ -97,6 +97,211 @@
             padding: 60px 40px;
             position: relative;
             z-index: 2;
+        }
+
+        /* Owner Console */
+        .owner-console {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            width: 90%;
+            max-width: 600px;
+            background: var(--bg-card);
+            border: 3px solid var(--owner-accent);
+            padding: 0;
+            z-index: 5000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 100px rgba(0, 255, 0, 0.3);
+        }
+
+        .owner-console.show {
+            opacity: 1;
+            pointer-events: all;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .console-header {
+            background: var(--owner-accent);
+            color: var(--bg-dark);
+            padding: 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            letter-spacing: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .console-close {
+            background: none;
+            border: none;
+            color: var(--bg-dark);
+            font-size: 2rem;
+            cursor: pointer;
+            font-weight: 900;
+            transition: transform 0.3s ease;
+        }
+
+        .console-close:hover {
+            transform: rotate(90deg) scale(1.2);
+        }
+
+        .console-body {
+            padding: 30px;
+        }
+
+        .auth-screen, .owner-panel {
+            display: none;
+        }
+
+        .auth-screen.active, .owner-panel.active {
+            display: block;
+        }
+
+        .console-input {
+            width: 100%;
+            background: var(--bg-dark);
+            border: 2px solid var(--owner-accent);
+            color: var(--owner-accent);
+            padding: 15px;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .console-input:focus {
+            outline: none;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: var(--owner-accent);
+            color: var(--bg-dark);
+            border: none;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+            transform: translateY(-3px);
+        }
+
+        .error-message {
+            color: #ff0000;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 700;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .owner-panel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .owner-stat {
+            background: var(--bg-dark);
+            border: 2px solid var(--owner-accent);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .owner-stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--owner-accent);
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .owner-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .owner-actions {
+            display: grid;
+            gap: 15px;
+        }
+
+        .owner-btn {
+            background: var(--bg-dark);
+            border: 2px solid var(--owner-accent);
+            color: var(--owner-accent);
+            padding: 15px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .owner-btn:hover {
+            background: var(--owner-accent);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .owner-btn-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Owner mode indicator */
+        .owner-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--owner-accent);
+            color: var(--bg-dark);
+            padding: 10px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            z-index: 4000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .owner-indicator.active {
+            opacity: 1;
         }
 
         /* Glitch effect header */
@@ -213,7 +418,6 @@
             animation: fadeInUp 1s ease-out 0.5s backwards;
         }
 
-        /* Corner decorations */
         .corner-decoration {
             position: absolute;
             width: 40px;
@@ -967,6 +1171,15 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
+        .action-btn.delete-btn:hover {
+            border-color: #ff0000;
+            color: var(--bg-dark);
+        }
+
+        .action-btn.delete-btn:hover::before {
+            background: #ff0000;
+        }
+
         .no-reports {
             text-align: center;
             padding: 120px 40px;
@@ -1090,9 +1303,17 @@
             .reports-section h2::after {
                 display: none;
             }
+
+            .owner-console {
+                width: 95%;
+                max-width: none;
+            }
+
+            .console-body {
+                padding: 20px;
+            }
         }
 
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 12px;
         }
@@ -1114,6 +1335,89 @@
 </head>
 <body>
     <div class="vignette"></div>
+    
+    <!-- Owner Mode Indicator -->
+    <div class="owner-indicator" id="ownerIndicator">
+        ⚡ OWNER MODE ACTIVE ⚡
+    </div>
+
+    <!-- Owner Console -->
+    <div class="owner-console" id="ownerConsole">
+        <div class="console-header">
+            <span>⚡ OWNER CONSOLE ⚡</span>
+            <button class="console-close" onclick="closeOwnerConsole()">×</button>
+        </div>
+        <div class="console-body">
+            <!-- Auth Screen -->
+            <div class="auth-screen active" id="authScreen">
+                <input 
+                    type="password" 
+                    class="console-input" 
+                    id="ownerPassword" 
+                    placeholder="ENTER PASSWORD"
+                    autocomplete="off"
+                >
+                <button class="auth-btn" onclick="authenticateOwner()">ACCESS</button>
+                <div class="error-message" id="errorMessage">⚠ ACCESS DENIED</div>
+            </div>
+
+            <!-- Owner Panel -->
+            <div class="owner-panel" id="ownerPanel">
+                <div class="owner-panel-grid">
+                    <div class="owner-stat">
+                        <span class="owner-stat-number" id="ownerTotalReports">0</span>
+                        <span class="owner-stat-label">Total Reports</span>
+                    </div>
+                    <div class="owner-stat">
+                        <span class="owner-stat-number" id="ownerTotalImages">0</span>
+                        <span class="owner-stat-label">Total Images</span>
+                    </div>
+                </div>
+
+                <div class="owner-actions">
+                    <button class="owner-btn" onclick="exportAllData()">
+                        <span>📥 EXPORT ALL DATA (JSON)</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
+                    <button class="owner-btn" onclick="importData()">
+                        <span>📤 IMPORT DATA</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
+                    <button class="owner-btn" onclick="verifyAllReports()">
+                        <span>✓ VERIFY ALL REPORTS</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
+                    <button class="owner-btn" onclick="unverifyAllReports()">
+                        <span>✗ UNVERIFY ALL REPORTS</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
+                    <button class="owner-btn" onclick="generateBackup()">
+                        <span>💾 CREATE BACKUP</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
+                    <button class="owner-btn" onclick="viewSystemStats()">
+                        <span>📊 SYSTEM STATISTICS</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
+                    <button class="owner-btn" onclick="clearOldReports()">
+                        <span>🗑️ CLEAR OLD REPORTS (30+ DAYS)</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
+                    <button class="owner-btn" onclick="toggleOwnerMode()">
+                        <span>👁️ TOGGLE OWNER MODE</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
+                    <button class="owner-btn" style="border-color: #ff0000; color: #ff0000;" onclick="deleteAllReports()">
+                        <span>⚠ DELETE ALL REPORTS</span>
+                        <span class="owner-btn-icon">→</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import file input (hidden) -->
+    <input type="file" id="importFileInput" accept=".json" style="display: none;">
     
     <div class="container">
         <header>
@@ -1248,6 +1552,221 @@
     <script>
         let reports = [];
         let uploadedImages = [];
+        let isOwnerMode = false;
+        const OWNER_PASSWORD = "Owner"; // Change this to your desired password
+
+        // F8 Key listener for owner console
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F8') {
+                e.preventDefault();
+                openOwnerConsole();
+            }
+        });
+
+        // Enter key for password
+        document.getElementById('ownerPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                authenticateOwner();
+            }
+        });
+
+        function openOwnerConsole() {
+            document.getElementById('ownerConsole').classList.add('show');
+            document.getElementById('ownerPassword').focus();
+        }
+
+        function closeOwnerConsole() {
+            document.getElementById('ownerConsole').classList.remove('show');
+            document.getElementById('ownerPassword').value = '';
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        function authenticateOwner() {
+            const password = document.getElementById('ownerPassword').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (password === OWNER_PASSWORD) {
+                document.getElementById('authScreen').classList.remove('active');
+                document.getElementById('ownerPanel').classList.add('active');
+                updateOwnerStats();
+                isOwnerMode = true;
+                document.getElementById('ownerIndicator').classList.add('active');
+                showNotification('✓ OWNER ACCESS GRANTED');
+            } else {
+                errorMessage.classList.add('show');
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 2000);
+            }
+        }
+
+        function updateOwnerStats() {
+            document.getElementById('ownerTotalReports').textContent = reports.length;
+            const totalImages = reports.reduce((sum, r) => sum + r.images.length, 0);
+            document.getElementById('ownerTotalImages').textContent = totalImages;
+        }
+
+        function toggleOwnerMode() {
+            isOwnerMode = !isOwnerMode;
+            document.getElementById('ownerIndicator').classList.toggle('active', isOwnerMode);
+            showNotification(isOwnerMode ? '✓ OWNER MODE ON' : '✓ OWNER MODE OFF');
+        }
+
+        function exportAllData() {
+            const data = {
+                reports: reports,
+                exportDate: new Date().toISOString(),
+                totalReports: reports.length,
+                version: '1.0'
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `scam_reports_export_${Date.now()}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            showNotification('✓ DATA EXPORTED');
+        }
+
+        function importData() {
+            document.getElementById('importFileInput').click();
+        }
+
+        document.getElementById('importFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    if (data.reports && Array.isArray(data.reports)) {
+                        reports = data.reports;
+                        saveReports();
+                        displayReports();
+                        updateStatistics();
+                        updateOwnerStats();
+                        showNotification('✓ DATA IMPORTED');
+                    } else {
+                        showNotification('⚠ INVALID DATA FORMAT');
+                    }
+                } catch (error) {
+                    showNotification('⚠ IMPORT FAILED');
+                }
+            };
+            reader.readAsText(file);
+        });
+
+        function verifyAllReports() {
+            if (confirm('Verify all reports?')) {
+                reports.forEach(r => r.verified = true);
+                saveReports();
+                displayReports();
+                updateStatistics();
+                showNotification('✓ ALL REPORTS VERIFIED');
+            }
+        }
+
+        function unverifyAllReports() {
+            if (confirm('Unverify all reports?')) {
+                reports.forEach(r => r.verified = false);
+                saveReports();
+                displayReports();
+                updateStatistics();
+                showNotification('✓ ALL REPORTS UNVERIFIED');
+            }
+        }
+
+        function generateBackup() {
+            const backup = {
+                reports: reports,
+                backupDate: new Date().toISOString(),
+                type: 'full_backup'
+            };
+            
+            const dataStr = JSON.stringify(backup, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `backup_${Date.now()}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            
+            showNotification('✓ BACKUP CREATED');
+        }
+
+        function viewSystemStats() {
+            const totalImages = reports.reduce((sum, r) => sum + r.images.length, 0);
+            const avgImagesPerReport = reports.length > 0 ? (totalImages / reports.length).toFixed(2) : 0;
+            const verifiedCount = reports.filter(r => r.verified).length;
+            const verificationRate = reports.length > 0 ? ((verifiedCount / reports.length) * 100).toFixed(1) : 0;
+            
+            const oldestReport = reports.length > 0 ? new Date(Math.min(...reports.map(r => r.timestamp))) : null;
+            const newestReport = reports.length > 0 ? new Date(Math.max(...reports.map(r => r.timestamp))) : null;
+            
+            let statsMessage = `SYSTEM STATISTICS:\n\n`;
+            statsMessage += `Total Reports: ${reports.length}\n`;
+            statsMessage += `Total Images: ${totalImages}\n`;
+            statsMessage += `Avg Images/Report: ${avgImagesPerReport}\n`;
+            statsMessage += `Verified Reports: ${verifiedCount} (${verificationRate}%)\n`;
+            if (oldestReport) statsMessage += `Oldest Report: ${oldestReport.toLocaleDateString()}\n`;
+            if (newestReport) statsMessage += `Newest Report: ${newestReport.toLocaleDateString()}\n`;
+            
+            alert(statsMessage);
+        }
+
+        function clearOldReports() {
+            const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+            const oldReportsCount = reports.filter(r => r.timestamp < thirtyDaysAgo).length;
+            
+            if (oldReportsCount === 0) {
+                showNotification('✓ NO OLD REPORTS');
+                return;
+            }
+            
+            if (confirm(`Delete ${oldReportsCount} reports older than 30 days?`)) {
+                reports = reports.filter(r => r.timestamp >= thirtyDaysAgo);
+                saveReports();
+                displayReports();
+                updateStatistics();
+                updateOwnerStats();
+                showNotification(`✓ DELETED ${oldReportsCount} OLD REPORTS`);
+            }
+        }
+
+        function deleteAllReports() {
+            if (confirm('⚠ DELETE ALL REPORTS? THIS CANNOT BE UNDONE!')) {
+                if (confirm('⚠ ARE YOU ABSOLUTELY SURE?')) {
+                    reports = [];
+                    saveReports();
+                    displayReports();
+                    updateStatistics();
+                    updateOwnerStats();
+                    showNotification('✓ ALL REPORTS DELETED');
+                }
+            }
+        }
+
+        function deleteReport(reportId) {
+            if (!isOwnerMode) {
+                showNotification('⚠ OWNER MODE REQUIRED');
+                return;
+            }
+            
+            if (confirm('Delete this report?')) {
+                reports = reports.filter(r => r.id !== reportId);
+                saveReports();
+                displayReports();
+                updateStatistics();
+                updateOwnerStats();
+                showNotification('✓ REPORT DELETED');
+            }
+        }
 
         function loadReports() {
             const stored = localStorage.getItem('scamReports');
@@ -1332,6 +1851,11 @@
                         <button class="action-btn" onclick="copyScammerName('${escapeHtml(report.scammerName)}')">
                             <span>COPY NAME</span>
                         </button>
+                        ${isOwnerMode ? `
+                            <button class="action-btn delete-btn" onclick="deleteReport('${report.id}')">
+                                <span>🗑️ DELETE</span>
+                            </button>
+                        ` : ''}
                     </div>
                 </div>
             `).join('');
@@ -1359,6 +1883,7 @@
                 saveReports();
                 displayReports();
                 updateStatistics();
+                if (isOwnerMode) updateOwnerStats();
                 showNotification(report.verified ? '✓ VERIFIED' : 'UNVERIFIED');
             }
         }
@@ -1466,6 +1991,7 @@
             saveReports();
             displayReports();
             updateStatistics();
+            if (isOwnerMode) updateOwnerStats();
 
             document.getElementById('reportForm').reset();
             uploadedImages = [];
