@@ -1423,27 +1423,8 @@
         let currentUserName = '';
         const OWNER_PASSWORD = "Owner";
         
-        // Enhanced webhook obfuscation with multiple encoding layers
-        const _w = {
-            p1: 'aHR0cHM6Ly9kaXNjb3Jk',
-            p2: 'LmNvbS9hcGkvd2Via',
-            p3: 'G9va3MvMTQ2NjE5',
-            p4: 'MzE5NzE3NTkzMTEy',
-            p5: 'OC9Mb0FQdE92MFg0',
-            p6: 'RlRRUnl2UUx0ZlFX',
-            p7: 'SC1tazBBRDctZk9P',
-            p8: 'Y2xwT0VDc3lzTFpy',
-            p9: 'eUZ4S3NJWjB2ZUot',
-            p10: 'TDBpOUJrWUtkWA=='
-        };
-        
-        const _getWebhookUrl = () => {
-            const parts = Object.values(_w);
-            const combined = parts.join('');
-            return atob(combined);
-        };
-        
-        const DISCORD_WEBHOOK = _getWebhookUrl();
+        // Discord Webhook URL
+        const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1466193197175931128/LoAPtOv0X4FTQRyvQLtfQWH-mz0AD7-fOOclpOECsysLZryFxKsIZ0veJ-L0i9BkYKdX";
         
         // Webhook functions
         async function sendToWebhook(report) {
